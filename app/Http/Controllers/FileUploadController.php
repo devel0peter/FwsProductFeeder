@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
 use App\Services\FileUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,6 +30,9 @@ class FileUploadController extends Controller
         ]);
 
         try {
+            // set max execution time to 1 minute
+            ini_set('max_execution_time', 60);
+
             $this->fileUploadService->processUploadedFile($request->file('file'));
         } catch (\Exception $e) {
             Log::error("Error processing file: " . $e->getMessage());
