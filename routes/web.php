@@ -9,7 +9,8 @@ use App\Http\Controllers\FileUploadController;
 Route::get('/', function () {
     $totalProducts = Product::count();
     // get all categories with count
-    $categories = Category::withCount('products')->get();
+    $categories = Category::withCount('products')
+        ->orderByDesc('products_count')->get();
 
 
     return view('index', compact('totalProducts', 'categories'));

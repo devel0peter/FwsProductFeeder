@@ -11,6 +11,8 @@
         <li>"Kategória 3"</li>
 </ul>
 
+<hr>
+
 <p>
     Some improvements could be made if there was more time:
 </p>
@@ -21,7 +23,7 @@
     <li>Unit tests</li>
 </ul>
 
-
+<hr>
 
 <form action="{{ route('file.upload') }}" method="POST" enctype="multipart/form-data">
     @csrf
@@ -32,6 +34,8 @@
 
     <button type="submit">Upload</button>
 </form>
+
+<hr>
 
 <p>
     Total products in the system: {{ $totalProducts }}
