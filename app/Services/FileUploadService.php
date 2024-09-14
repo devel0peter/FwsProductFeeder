@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Exceptions\InvalidProductsFileHeaderException;
 use App\Models\Category;
 use App\Models\Product;
-use http\Exception\InvalidArgumentException;
+use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use SplFileObject;
@@ -14,17 +15,24 @@ class FileUploadService
 
     const validColumnNames = ['Megnevezés', 'Ár', 'Kategória 1', 'Kategória 2', 'Kategória 3'];
 
+    /**
+     * @throws Exception
+     */
     public function processUploadedFile(array|UploadedFile|null $file): void
     {
         $file = new SplFileObject($file->getRealPath(), 'r');
 
         if (!$this->isValidFileHeader($file)) {
-            throw new InvalidArgumentException("Invalid file header. Please make sure the file has the following columns: " . implode(', ', self::validColumnNames));
+            throw new InvalidProductsFileHeaderException("Invalid file header. Please make sure the file has the following columns: " . implode(', ', self::validColumnNames));
         }
 
         // iterate over the file and create a Product for each row
         // this might take a while, should be done in a queue job
-        $this->importProductsFromFile($file);
+        try {
+            $this->importProductsFromFile($file);
+        } catch (Exception $e) {
+            Log::error("Error importing products from file: " . $e->getMessage());
+        }
     }
 
     private function updateProgress(int $updatedProductsCount, int $totalRows): void
@@ -80,6 +88,8 @@ class FileUploadService
             $updatedProductsCount++;
             $this->updateProgress($updatedProductsCount, $totalRows);
         }
+
+        Log::info("Finished processing file with $updatedProductsCount products.");
     }
 
     /**
@@ -93,7 +103,13 @@ class FileUploadService
         $header = $file->fgetcsv();
 
         $file->rewind(); // rewind the file to the beginning
-        return $header === self::validColumnNames;
+
+        if ($header !== self::validColumnNames) {
+            Log::error("Invalid file header: " . implode(', ', $header));
+            return false;
+        }
+
+        return true;
     }
 
     /**
