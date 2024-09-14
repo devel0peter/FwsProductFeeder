@@ -61,27 +61,59 @@ class FileUploadService
             }
 
             /** @var Product $product */
-            $product = Product::updateOrCreate([
-                'name' => $row[0],
-                'price' => $row[1]
-            ]);
+            $product = Product::updateOrCreate(
+                [ 'name' => $row[0]],
+                [
+                    'price' => $row[1],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            );
 
             if (isset($row[2])) {
                 /** @var Category $category */
-                $category = Category::firstOrCreate(['name' => $row[2]]);
-                $product->categories()->attach($category->id);
+                $category = Category::firstOrCreate(
+                    ['name' => $row[2]],
+                    ['created_at' => now(), 'updated_at' => now()]
+                );
+
+                // attach the category to the product if it's not already attached
+                if (!$product->categories->contains($category->id)) {
+                    $product->categories()->attach(
+                        $category->id,
+                        ['created_at' => now(), 'updated_at' => now()]
+                    );
+                }
             }
 
             if (isset($row[3])) {
                 /** @var Category $category */
-                $category = Category::firstOrCreate(['name' => $row[3]]);
-                $product->categories()->attach($category->id);
+                $category = Category::firstOrCreate(
+                    ['name' => $row[3]],
+                    ['created_at' => now(), 'updated_at' => now()]
+                );
+
+                if (!$product->categories->contains($category->id)) {
+                    $product->categories()->attach(
+                        $category->id,
+                        ['created_at' => now(), 'updated_at' => now()]
+                    );
+                }
             }
 
             if (isset($row[4])) {
                 /** @var Category $category */
-                $category = Category::firstOrCreate(['name' => $row[4]]);
-                $product->categories()->attach($category->id);
+                $category = Category::firstOrCreate(
+                    ['name' => $row[4]],
+                    ['created_at' => now(), 'updated_at' => now()]
+                );
+
+                if (!$product->categories->contains($category->id)) {
+                    $product->categories()->attach(
+                        $category->id,
+                        ['created_at' => now(), 'updated_at' => now()]
+                    );
+                }
             }
 
             $product->save();
