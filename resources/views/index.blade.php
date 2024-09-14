@@ -31,3 +31,9 @@
         <p>File path: {{ session('file') }}</p>
     </div>
 @endif
+
+@if (session('error'))
+    <div>
+        <p>{{ session('error') }}</p>
+    </div>
+@endif
