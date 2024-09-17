@@ -1,15 +1,12 @@
-<script setup>
-
-</script>
-
 <template>
-    <div>
-        <h1>HOME</h1>
-        <router-link to="/test"> Take me to Test page </router-link>
+    <div class="container mt-5">
+        <h1 class="text-center">Home</h1>
+        <p class="text-muted text-center">Welcome to the dashboard!</p>
     </div>
-
 </template>
 
-<style scoped>
-
-</style>
+<script>
+export default {
+    name: 'Home',
+};
+</script>
