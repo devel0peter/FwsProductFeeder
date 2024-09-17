@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileUploadController;
 
 Route::get('/', function () {
+    return view('home');
+});
+
+Route::get('/import-products', function () {
     $totalProducts = Product::count();
     // get all categories with count
     $categories = Category::withCount('products')
